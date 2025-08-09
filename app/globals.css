@@ -1,26 +1,392 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* app/globals.css - Global Styles untuk Nayea.id */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS untuk Islamic Fashion Theme */
+
+/* Font Arabic untuk Islamic text */
+/* @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap'); */
+
+.font-arabic {
+    font-family: 'Amiri', serif;
+    direction: rtl;
+    text-align: center;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* Custom utilities */
+@layer utilities {
+    .line-clamp-1 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 1;
+    }
+
+    .line-clamp-2 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .line-clamp-3 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 3;
+    }
 }
 
+/* Custom component styles */
+@layer components {
+    /* Islamic button style */
+    .btn-islamic {
+        @apply bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-md hover:shadow-lg;
+    }
+
+    .btn-islamic-outline {
+        @apply border-2 border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200;
+    }
+
+    /* Card hover effect */
+    .card-hover {
+        @apply transition-all duration-300 hover:shadow-xl hover:-translate-y-1;
+    }
+
+    /* Islamic gradient backgrounds */
+    .bg-islamic-gradient {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%);
+    }
+
+    .bg-islamic-light {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    }
+
+    /* Custom scrollbar */
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f5f9;
+        border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #059669;
+        border-radius: 3px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #047857;
+    }
+
+    /* Loading animation for Islamic theme */
+    .islamic-loading {
+        @apply animate-pulse bg-gradient-to-r from-emerald-100 via-emerald-200 to-emerald-100;
+        background-size: 200% 100%;
+        animation: islamic-shimmer 2s infinite;
+    }
+
+    @keyframes islamic-shimmer {
+        0% {
+            background-position: -200% 0;
+        }
+        100% {
+            background-position: 200% 0;
+        }
+    }
+
+    /* Product card styling */
+    .product-card {
+        @apply bg-white rounded-xl shadow-sm border hover:shadow-lg transition-all duration-300 overflow-hidden;
+    }
+
+    .product-card:hover {
+        @apply transform -translate-y-2;
+    }
+
+    /* Navigation styling */
+    .nav-link {
+        @apply text-gray-700 hover:text-emerald-600 px-3 py-2 text-sm font-medium transition-colors duration-200 relative;
+    }
+
+    .nav-link::after {
+        content: '';
+        @apply absolute bottom-0 left-1/2 w-0 h-0.5 bg-emerald-600 transition-all duration-200;
+        transform: translateX(-50%);
+    }
+
+    .nav-link:hover::after {
+        @apply w-full;
+    }
+
+    /* Islamic decorative elements */
+    .islamic-pattern {
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23059669' fill-opacity='0.05'%3E%3Cpath d='M30 30c0-16.569 13.431-30 30-30v60c-16.569 0-30-13.431-30-30z'/%3E%3Cpath d='M30 30c0 16.569-13.431 30-30 30V0c16.569 0 30 13.431 30 30z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* Toast notification custom styles */
+    .toast-success {
+        @apply bg-emerald-50 border border-emerald-200 text-emerald-800;
+    }
+
+    .toast-error {
+        @apply bg-red-50 border border-red-200 text-red-800;
+    }
+
+    .toast-info {
+        @apply bg-blue-50 border border-blue-200 text-blue-800;
+    }
+
+    /* Form input styling */
+    .input-islamic {
+        @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-colors;
+    }
+
+    .input-islamic:focus {
+        @apply outline-none;
+    }
+
+    /* Badge styling */
+    .badge-featured {
+        @apply bg-emerald-600 text-white px-3 py-1 rounded-full text-xs font-semibold;
+    }
+
+    .badge-new {
+        @apply bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-semibold;
+    }
+
+    .badge-sale {
+        @apply bg-red-600 text-white px-3 py-1 rounded-full text-xs font-semibold;
+    }
+
+    /* Star rating styling */
+    .star-rating {
+        @apply flex items-center space-x-1;
+    }
+
+    .star-filled {
+        @apply text-yellow-400 fill-current;
+    }
+
+    .star-empty {
+        @apply text-gray-300;
+    }
+
+    /* Price styling */
+    .price-current {
+        @apply text-2xl font-bold text-emerald-600;
+    }
+
+    .price-original {
+        @apply text-sm text-gray-500 line-through;
+    }
+
+    .price-discount {
+        @apply text-sm text-red-600 font-semibold;
+    }
+}
+
+/* Base layer customizations */
+@layer base {
+    /* Custom focus styles */
+    *:focus {
+        @apply outline-none;
+    }
+
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Body styling */
+    body {
+        @apply antialiased text-gray-900;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Headings */
+    h1, h2, h3, h4, h5, h6 {
+        @apply font-semibold;
+    }
+
+    /* Links */
+    a {
+        @apply transition-colors duration-200;
+    }
+
+    /* Buttons */
+    button {
+        @apply transition-all duration-200 focus:outline-none;
+    }
+
+    /* Images */
+    img {
+        @apply max-w-full h-auto;
+    }
+
+    /* Selection styling */
+    ::selection {
+        @apply bg-emerald-100 text-emerald-900;
+    }
+
+    ::-moz-selection {
+        @apply bg-emerald-100 text-emerald-900;
+    }
+}
+
+/* Islamic-specific animations */
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fade-in-down {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes scale-in {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes bounce-gentle {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-10px);
+    }
+    60% {
+        transform: translateY(-5px);
+    }
+}
+
+/* Animation utility classes */
+.animate-fade-in-up {
+    animation: fade-in-up 0.6s ease-out;
+}
+
+.animate-fade-in-down {
+    animation: fade-in-down 0.6s ease-out;
+}
+
+.animate-scale-in {
+    animation: scale-in 0.4s ease-out;
+}
+
+.animate-bounce-gentle {
+    animation: bounce-gentle 2s infinite;
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+    .mobile-padding {
+        @apply px-4;
+    }
+    
+    .mobile-text-sm {
+        @apply text-sm;
+    }
+}
+
+/* Dark mode support (optional) */
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+    .dark-mode-auto {
+        @apply bg-gray-900 text-white;
+    }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Print styles */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    
+    .print-only {
+        display: block !important;
+    }
+}
+
+/* Loading states */
+.loading-spinner {
+    border: 2px solid #f3f4f6;
+    border-top: 2px solid #059669;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Islamic pattern overlay for special sections */
+.islamic-overlay::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-opacity='0.03'%3E%3Cpolygon fill='%23059669' points='50 0 60 40 100 50 60 60 50 100 40 60 0 50 40 40'/%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+}
+
+/* Accessibility improvements */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+/* Focus styles for accessibility */
+.focus-islamic:focus {
+    @apply outline-none ring-2 ring-emerald-500 ring-offset-2;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .high-contrast {
+        @apply border-2 border-black;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }

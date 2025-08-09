@@ -7,7 +7,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https:github.com/efrino/nayea-frontend.git"
+    "url": "https://github.com/efrino/nayea-frontend.git"
   },
   "bugs": {
     "url": "https:github.com/efrino/nayea-frontend/issues"
@@ -23,35 +23,35 @@
     "start": "next start"
   },
   "dependencies": {
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "@headlessui/react": "^2.2.0",
+    "@hookform/resolvers": "^3.10.0",
+    "@tanstack/react-query": "^5.59.20",
+    "axios": "^1.7.7",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "framer-motion": "^12.0.0",
+    "js-cookie": "^3.0.5",
+    "lucide-react": "^0.468.0",
     "next": "15.4.6",
     "next-auth": "^5.0.0-beta.22",
-    "axios": "^1.7.7",
-    "@tanstack/react-query": "^5.59.20",
-    "zustand": "^5.0.2",
+    "next-themes": "^0.4.3",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
     "react-hook-form": "^7.53.2",
-    "@hookform/resolvers": "^3.10.0",
-    "zod": "^3.24.1",
-    "js-cookie": "^3.0.5",
     "react-hot-toast": "^2.4.1",
-    "framer-motion": "^12.0.0",
-    "lucide-react": "^0.468.0",
-    "@headlessui/react": "^2.2.0",
-    "clsx": "^2.1.1",
-    "class-variance-authority": "^0.7.1",
-    "tailwind-merge": "^2.5.4",
     "react-intersection-observer": "^9.14.0",
     "react-lazy-load-image-component": "^1.6.2",
     "sharp": "^0.33.5",
-    "next-themes": "^0.4.3",
-    "date-fns": "^4.1.0"
+    "tailwind-merge": "^2.5.4",
+    "zod": "^3.24.1",
+    "zustand": "^5.0.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "autoprefixer": "^10.4.20",
     "postcss": "^8.5.1",
-    "autoprefixer": "^10.4.20"
+    "tailwindcss": "^4"
   },
   "keywords": [
     "nayea",

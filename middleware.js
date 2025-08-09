@@ -1,4 +1,4 @@
-// middleware.js - Updated for Direct Selling Roles
+// middleware.js - Unified Routes with Permission-based Access
 import { NextResponse } from 'next/server'
 import { getToken } from 'next-auth/jwt'
 
@@ -9,94 +9,129 @@ export async function middleware(request) {
     })
 
     const { pathname } = request.nextUrl
+    const url = request.nextUrl.clone()
 
-    // Public routes that don't require authentication
+    // Clean route mappings - Semua unified routes
+    const routeMap = {
+        // Public routes - tetap sama
+        '/shop': '/products',
+        '/categories': '/categories',
+        '/about': '/about',
+        '/contact': '/contact',
+        '/help': '/help',
+
+        // Auth routes  
+        '/login': '/auth/login',
+        '/register': '/auth/register',
+        '/logout': '/auth/logout',
+
+        // ===== UNIFIED ROUTES - Semua role bisa akses =====
+        // Dashboard
+        '/dashboard': '/dashboard',
+
+        // User Management (permission-based CRUD)
+        '/users': '/users',
+        '/profile': '/users/profile',
+
+        // Product Management (permission-based CRUD)
+        '/products': '/products',
+        '/categories': '/categories',
+
+        // Order Management (permission-based CRUD) 
+        '/orders': '/orders',
+        '/cart': '/cart',
+        '/checkout': '/checkout',
+        '/wishlist': '/wishlist',
+
+        // Content Management (permission-based CRUD)
+        '/reports': '/reports',
+        '/analytics': '/analytics',
+        '/settings': '/settings',
+
+        // Customer Service (permission-based CRUD)
+        '/support': '/support',
+        '/customers': '/customers',
+
+        // Address Management
+        '/addresses': '/addresses'
+    }
+
+    // Public routes - tidak memerlukan authentication
     const publicRoutes = [
         '/',
-        '/auth/login',
-        '/auth/register',
-        '/products',
+        '/shop',
         '/categories',
         '/about',
         '/contact',
         '/help',
         '/shipping',
         '/returns',
+        '/login',
+        '/register'
     ]
 
-    // Admin only routes
-    const adminRoutes = [
-        '/admin',
-        '/admin/dashboard',
-        '/admin/users',
-        '/admin/staff',
-        '/admin/products',
-        '/admin/orders',
-        '/admin/categories',
-        '/admin/reports',
-        '/admin/settings',
-        '/admin/analytics',
-    ]
-
-    // Staff routes (Admin + Staff can access)
-    const staffRoutes = [
-        '/staff',
-        '/staff/dashboard',
-        '/staff/orders',
-        '/staff/customers',
-        '/staff/products',
-        '/staff/support',
-        '/staff/reports',
-    ]
-
-    // User/Customer routes (All authenticated users can access)
-    const userRoutes = [
-        '/user',
-        '/user/dashboard',
-        '/user/profile',
-        '/user/orders',
-        '/user/addresses',
+    // Routes yang memerlukan authentication (semua unified routes)
+    const protectedRoutes = [
+        '/dashboard',
+        '/users',
+        '/profile',
+        '/products',
+        '/orders',
         '/cart',
         '/checkout',
         '/wishlist',
-        '/account',
+        '/reports',
+        '/analytics',
+        '/settings',
+        '/support',
+        '/customers',
+        '/addresses'
     ]
 
-    // API routes that need authentication
+    // API routes yang perlu authentication
     const protectedApiRoutes = [
-        '/api/user',
-        '/api/admin',
-        '/api/staff',
+        '/api/users',
+        '/api/products',
         '/api/orders',
         '/api/cart',
+        '/api/reports',
+        '/api/settings',
+        '/api/support'
     ]
+
+    // Handle clean URL rewriting
+    if (routeMap[pathname]) {
+        url.pathname = routeMap[pathname]
+        return NextResponse.rewrite(url)
+    }
 
     // Check if it's a public route
     const isPublicRoute = publicRoutes.some(route =>
         pathname === route || pathname.startsWith(route + '/')
     )
 
-    // Check if it's an API route
-    const isApiRoute = pathname.startsWith('/api/')
-
-    // Check if it's a protected API route
-    const isProtectedApiRoute = protectedApiRoutes.some(route =>
-        pathname.startsWith(route)
-    )
-
-    // Allow public routes and NextAuth routes
-    if (isPublicRoute || pathname.startsWith('/auth/') || pathname.startsWith('/_next/')) {
+    // Skip middleware for NextJS internal routes and static files
+    if (
+        pathname.startsWith('/_next/') ||
+        pathname.startsWith('/api/auth/') ||
+        pathname.includes('.') ||
+        isPublicRoute
+    ) {
         return NextResponse.next()
     }
 
     // Handle API routes
-    if (isApiRoute) {
-        // If it's a protected API route and no token, return 401
-        if (isProtectedApiRoute && !token) {
+    if (pathname.startsWith('/api/')) {
+        const isProtectedApi = protectedApiRoutes.some(route =>
+            pathname.startsWith(route)
+        )
+
+        if (isProtectedApi && !token) {
             return new NextResponse(
                 JSON.stringify({
                     success: false,
-                    message: 'Authentication required'
+                    message: 'Authentication required',
+                    code: 'AUTH_REQUIRED'
                 }),
                 {
                     status: 401,
@@ -107,60 +142,55 @@ export async function middleware(request) {
         return NextResponse.next()
     }
 
-    // If no token and not a public route, redirect to login
-    if (!token) {
-        const loginUrl = new URL('/auth/login', request.url)
-        loginUrl.searchParams.set('callbackUrl', request.url)
+    // Check if route requires authentication
+    const isProtectedRoute = protectedRoutes.some(route =>
+        pathname === route || pathname.startsWith(route + '/')
+    )
+
+    // If protected route and no token, redirect to login
+    if (isProtectedRoute && !token) {
+        const loginUrl = new URL('/login', request.url)
+        loginUrl.searchParams.set('callbackUrl', pathname)
         return NextResponse.redirect(loginUrl)
     }
 
-    // Role-based access control for Direct Selling Company
-    const userRole = token.role
+    // Semua authenticated user bisa akses semua route
+    // Permission-based CRUD akan di-handle di component level
 
-    // Check admin routes (Admin only)
-    if (adminRoutes.some(route => pathname.startsWith(route))) {
-        if (userRole !== 'admin') {
-            return NextResponse.redirect(new URL('/unauthorized', request.url))
-        }
-    }
-
-    // Check staff routes (Admin + Staff can access)
-    if (staffRoutes.some(route => pathname.startsWith(route))) {
-        if (!['admin', 'staff'].includes(userRole)) {
-            return NextResponse.redirect(new URL('/unauthorized', request.url))
-        }
-    }
-
-    // Check user routes (All authenticated users can access)
-    if (userRoutes.some(route => pathname.startsWith(route))) {
-        if (!['admin', 'staff', 'user'].includes(userRole)) {
-            return NextResponse.redirect(new URL('/unauthorized', request.url))
-        }
-    }
-
-    // Add security headers for Nayea.id
+    // Add user info to headers for easy access in components
     const response = NextResponse.next()
 
-    // Islamic blessing header
-    response.headers.set('X-Islamic-Blessing', 'Bismillahirrahmanirrahim')
-    response.headers.set('X-Company', 'Nayea.id Direct Selling')
+    if (token) {
+        response.headers.set('X-User-Role', token.role || 'user')
+        response.headers.set('X-User-ID', token.sub || '')
+        response.headers.set('X-User-Email', token.email || '')
+    }
+
+    // Islamic blessing and security headers
+    // Fix: Encode Arabic text to base64 or use ASCII transliteration
+    const islamicBlessing = 'Bismillahir Rahmanir Rahim' // ASCII transliteration
+    // Alternative: Base64 encoded Arabic
+    // const islamicBlessing = Buffer.from('بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم').toString('base64')
+
+    response.headers.set('X-Islamic-Blessing', islamicBlessing)
+    response.headers.set('X-Company', 'Nayea.id - Islamic Fashion')
     response.headers.set('X-Content-Type-Options', 'nosniff')
     response.headers.set('X-Frame-Options', 'DENY')
     response.headers.set('X-XSS-Protection', '1; mode=block')
-    response.headers.set('Referrer-Policy', 'origin-when-cross-origin')
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+    response.headers.set('X-Robots-Tag', 'index, follow')
+
+    // CSP for Islamic content safety
+    response.headers.set(
+        'Content-Security-Policy',
+        "default-src 'self'; img-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"
+    )
 
     return response
 }
 
 export const config = {
     matcher: [
-        /*
-         * Match all request paths except for the ones starting with:
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * - public folder
-         */
-        '/((?!_next/static|_next/image|favicon.ico|public/).*)',
+        '/((?!_next/static|_next/image|favicon.ico|public/|.*\\..*$).*)',
     ],
-} 
+}

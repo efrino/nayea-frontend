@@ -328,7 +328,7 @@ export default function RegisterPage() {
                         {/* Login Link */}
                         <p className="text-center text-sm text-gray-600 mt-6">
                             Sudah punya akun?{' '}
-                            <Link href="/auth/login" className="text-islamic-green-600 hover:text-islamic-green-700 font-semibold">
+                            <Link href="/login" className="text-islamic-green-600 hover:text-islamic-green-700 font-semibold">
                                 Masuk di sini
                             </Link>
                         </p>
