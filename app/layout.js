@@ -35,14 +35,21 @@ export const metadata = {
     description: 'Discover authentic Islamic fashion and accessories',
     images: ['/og-image.jpg'],
   },
-  viewport: 'width=device-width, initial-scale=1',
-  themeColor: '#059669',
+  // removed viewport & themeColor from metadata — moved to `viewport` export below
   manifest: '/manifest.json',
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
     apple: '/apple-touch-icon.png',
   },
+}
+
+// Put viewport + themeColor in this export (server-only)
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  // themeColor belongs here
+  themeColor: '#059669',
 }
 
 export default function RootLayout({ children }) {
@@ -90,11 +97,11 @@ export default function RootLayout({ children }) {
             <script
               dangerouslySetInnerHTML={{
                 __html: `
-                                    window.dataLayer = window.dataLayer || [];
-                                    function gtag(){dataLayer.push(arguments);}
-                                    gtag('js', new Date());
-                                    gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}');
-                                `,
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', '${process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS_ID}');
+                `,
               }}
             />
           </>
